@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main page</title>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title> About cooking :-) </title>
+    {% endif %}
 </head>
 <body>
-<h1>Main page!</h1>
+<url>
+    {% for val in menuitems %}
+    <li>{{val}}</li>
+    {% endfor %}
+</url>
+{% if title %}
+<h1>{{ title }}</h1>
+{% else %}
+<h1>About cooking :-)</h1>
+{% endif %}
 </body>
 </html>
