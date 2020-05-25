@@ -1,22 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% if title %}
-    <title>{{ title }}</title>
-    {% else %}
-    <title> About site </title>
-    {% endif %}
-</head>
-<body>
-<url>
-    {% for val in menuitems %}
-    <li>{{val}}</li>
-    {% endfor %}
-</url>
-{% if title %}
-<h1>{{ title }}</h1>
-{% else %}
-<h1>About info</h1>
-{% endif %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+<p>About site</p>
+{% endblock %}
