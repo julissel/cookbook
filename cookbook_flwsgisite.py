@@ -1,7 +1,12 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, flash
+from configparser import ConfigParser
 
 
 app = Flask(__name__)
+conf = ConfigParser()
+conf.read('cookbook_config.conf')
+app.config['SECRET_KEY'] = conf['CONFIG']['SECRET_KEY']
+
 menu = [{"name": "Intro", "url": "intro-cookbook"},
         {"name": "Dish of the day (recipe)", "url": "main-dish"},
         {"name": "Contact us", "url": "contact"}]
@@ -26,7 +31,10 @@ def profile(username, country):
 @app.route("/contact", methods=["POST", "GET"])
 def contact():
     if request.method == 'POST':
-        print(request.form['username'])
+        if len(request.form['username']) > 2:
+            flash('Message sent', category='success')
+        else:
+            flash('Sending error', category='error')
 
     return render_template('contacts.html', title='Contact us', menu=menu)
 
