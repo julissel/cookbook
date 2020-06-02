@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, flash, session, redirect
+from flask import Flask, render_template, url_for, request, flash, session, redirect, abort
 from configparser import ConfigParser
 
 
@@ -25,6 +25,9 @@ def about():
 
 @app.route("/profile/<int:country>/<path:username>")
 def profile(username, country):
+    if 'userLogged' not in session or session['userLogged'] != username:
+        abort(401)
+
     return f"User: {username}, country {country}"
 
 
