@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, flash
+from flask import Flask, render_template, url_for, request, flash, session, redirect
 from configparser import ConfigParser
 
 
@@ -39,9 +39,21 @@ def contact():
     return render_template('contacts.html', title='Contact us', menu=menu)
 
 
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if 'userLogged' in session:
+        return redirect(url_for('profile', username=session['userLogged'], country=session['userCountry']))
+    elif request.method == 'POST' and request.form['username'] == 'test_user' and request.form['psw'] == 'qwerty':
+        session['userLogged'] = request.form['username']
+        session['userCountry'] = request.form['country']
+        return redirect(url_for('profile', username=session['userLogged'], country=session['userCountry']))
+
+    return render_template('login.html', title='Authorization', menu=menu)
+
+
 @app.errorhandler(404)
 def pageNotFound(error):
-    return render_template('page404.html', title="The page was not found", menu=menu)
+    return render_template('page404.html', title="The page was not found", menu=menu), 404
 
 
 # context manager
