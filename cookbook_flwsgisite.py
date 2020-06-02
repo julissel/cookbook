@@ -39,6 +39,11 @@ def contact():
     return render_template('contacts.html', title='Contact us', menu=menu)
 
 
+@app.errorhandler(404)
+def pageNotFound(error):
+    return render_template('page404.html', title="The page was not found", menu=menu)
+
+
 # context manager
 #with app.test_request_context():
 #    print('url for about-page =', url_for('about'))
