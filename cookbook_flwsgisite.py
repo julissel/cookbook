@@ -1,3 +1,5 @@
+import os
+import sqlite3
 from flask import Flask, render_template, url_for, request, flash, session, redirect, abort
 from configparser import ConfigParser
 
@@ -6,6 +8,14 @@ app = Flask(__name__)
 conf = ConfigParser()
 conf.read('cookbook_config.conf')
 app.config['SECRET_KEY'] = conf['CONFIG']['SECRET_KEY']
+app.config['DATABASE'] = conf['CONFIG']['DATABASE']
+app.config['DEBUG'] = conf['CONFIG']['DEBUG']
+app.config['USERNAME'] = conf['CONFIG']['USERNAME']
+app.config['PASSWORD'] = conf['CONFIG']['PASSWORD']
+
+app.config.from_object(__name__)
+
+app.config.update(dict(DATABASE=os.path.join(app.root_path, 'flsite.db')))
 
 menu = [{"name": "Intro", "url": "intro-cookbook"},
         {"name": "Dish of the day (recipe)", "url": "main-dish"},
@@ -64,6 +74,20 @@ def pageNotFound(error):
 #    print('url for about-page =', url_for('about'))
 #    print('url for index-page =', url_for('index'))
 #    print('url for profile =', url_for("profile", username='Maria', country=643))
+
+
+def connect_db():
+    conn = sqlite3.connect(app.config['DATABASE'])
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def create_bd():
+    db =  connect_db()
+    with app.open_resource('script_create_db.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+    db.close()
 
 
 if __name__ == "__main__":
