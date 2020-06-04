@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, render_template, url_for, request, flash, session, redirect, abort
+from flask import Flask, render_template, url_for, request, flash, session, redirect, abort, g
 from configparser import ConfigParser
 
 
@@ -21,10 +21,17 @@ menu = [{"name": "Intro", "url": "intro-cookbook"},
         {"name": "Dish of the day (recipe)", "url": "main-dish"},
         {"name": "Contact us", "url": "contact"}]
 
+db_file = 'flsite.db'
+
 
 @app.route("/index")
 @app.route("/")
 def index():
+    if not os.path.exists(db_file):
+        create_bd()
+
+    db = get_db()
+
     return render_template("index.html", menu=menu)
 
 
@@ -77,17 +84,29 @@ def pageNotFound(error):
 
 
 def connect_db():
-    conn = sqlite3.connect(app.config['DATABASE'])
-    conn.row_factory = sqlite3.Row
-    return conn
+        conn = sqlite3.connect(app.config['DATABASE'])
+        conn.row_factory = sqlite3.Row
+        return conn
 
 
 def create_bd():
-    db =  connect_db()
+    db = connect_db()
     with app.open_resource('script_create_db.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
     db.close()
+
+
+def get_db():
+    if not hasattr(g, 'link_db'):
+        g.link_db = connect_db()
+    return g.link_db
+
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
 
 
 if __name__ == "__main__":
