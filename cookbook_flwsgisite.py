@@ -73,6 +73,26 @@ def login():
     return render_template('login.html', title='Authorization', menu=menu)
 
 
+@app.route("/add_post", methods=["POST", "GET"])
+def addPost():
+    db = get_db()
+    dbase = FDataBase(db)
+
+    if request.method == "POST":
+        if len(request.form['name']) > 4 and len(request.form['post']) > 10:
+            res = dbase.addPost(request.form['name'], request.form['post'])
+            if not res:
+                flash('Error. Article not added!', category='error')
+            else:
+                flash('Article successfully added.', category='success')
+        else:
+            flash('Error. Article not added.'
+                  'The name must be longer than 4 characters '
+                  'and the text in post must be longer than 10 characters')
+
+    return render_template('add_post.html', menu=dbase.getMenu(), title='Adding of the new article.')
+
+
 @app.errorhandler(404)
 def pageNotFound(error):
     return render_template('page404.html', title="The page was not found", menu=menu), 404
