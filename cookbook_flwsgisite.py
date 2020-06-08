@@ -2,6 +2,7 @@ import os
 import sqlite3
 from flask import Flask, render_template, url_for, request, flash, session, redirect, abort, g
 from configparser import ConfigParser
+from FDataBase import FDataBase
 
 
 app = Flask(__name__)
@@ -32,7 +33,8 @@ def index():
 
     db = get_db()
 
-    return render_template("index.html", menu=menu)
+    dbase = FDataBase(db)
+    return render_template("index.html", menu=dbase.getMenu())  # menu=menu)
 
 
 @app.route("/about")

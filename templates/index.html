@@ -2,5 +2,14 @@
 
 {% block content %}
 {{super()}}
-<p>About cooking (main page)</p>
+<hr>
+<h2>About cooking (main page)</h2>
+<ul class="list-posts">
+    {% for p in posts %}
+    <li>
+        <p class="title"><a href="{{ url_for('showPost', id_post=p.id)}}">{{p.title}}</a> </p>
+        <p class="annonce">{{ p.text[:50]}}</p>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
