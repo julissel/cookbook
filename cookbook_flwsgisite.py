@@ -88,7 +88,7 @@ def addPost():
         else:
             flash('Error. Article not added.'
                   'The name must be longer than 4 characters '
-                  'and the text in post must be longer than 10 characters')
+                  'and the text in the post must be longer than 10 characters')
 
     return render_template('add_post.html', menu=dbase.getMenu(), title='Adding of the new article.')
 
