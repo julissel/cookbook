@@ -93,6 +93,17 @@ def addPost():
     return render_template('add_post.html', menu=dbase.getMenu(), title='Adding of the new article.')
 
 
+@app.route("/post/<int:id_post>")
+def showPost(id_post):
+    db = get_db()
+    dbase = FDataBase(db)
+    title, post = dbase.getPost(id_post)
+    if not title:
+        abort(404)
+
+    return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
+
+
 @app.errorhandler(404)
 def pageNotFound(error):
     return render_template('page404.html', title="The page was not found", menu=menu), 404

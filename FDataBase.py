@@ -31,3 +31,15 @@ class FDataBase:
             return False
 
         return True
+
+
+    def getPost(self, postID):
+        try:
+            self.__cur.execute(f"SELECT title, text FROM posts WHERE id= {postID} LIMIT 1")
+            res = self.__cur.fetchone()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Error in getting recipe from DB" + str(e))
+
+        return (False, False)
