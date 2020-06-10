@@ -24,10 +24,10 @@ class FDataBase:
     def addPost(self, title, text):
         try:
             tm = math.floor(time.time())
-            self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?)", (title, text,tm))
+            self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?)", (title, text, tm))
             self.__db.commit()
         except sqlite3.Error as e:
-            print("Error in adding recipe in DB" + str(e))
+            print("Error in adding recipe in DB " + str(e))
             return False
 
         return True
@@ -40,6 +40,18 @@ class FDataBase:
             if res:
                 return res
         except sqlite3.Error as e:
-            print("Error in getting recipe from DB" + str(e))
+            print("Error in getting recipe from DB " + str(e))
 
         return (False, False)
+
+
+    def getPostsAnonce(self):
+        try:
+            self.__cur.execute(f"SELECT id, title, text FROM posts ORDER BY time DESC")
+            res = self.__cur.fetchall()
+            if res:
+                return res
+        except sqlite3.Error as e:
+            print("Error in getting the list of recipes from DB " + str(e))
+
+        return []
