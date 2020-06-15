@@ -1,6 +1,8 @@
 import sqlite3
 import math
 import time
+import re
+from flask import url_for
 
 
 class FDataBase:
@@ -28,6 +30,11 @@ class FDataBase:
             if res['count'] > 0:
                 print('Input another URL, current URL has already used.')
                 return False
+
+            base = url_for('static', filename='images')
+            text = re.sub(r"(?P<tag><img\s+[^>]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
+                          "\\g<tag>" + base + "/\\g<url>>",
+                          text)
 
             tm = math.floor(time.time())
             self.__cur.execute("INSERT INTO posts VALUES(NULL, ?, ?, ?, ?)", (title, text, url, tm))
