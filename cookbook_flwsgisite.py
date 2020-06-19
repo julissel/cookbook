@@ -96,12 +96,16 @@ def addPost():
 def showPost(alias):
     db = get_db()
     dbase = FDataBase(db)
-    title, post = dbase.getPost(alias)
+    title, post = dbase.F(alias)
     if not title:
         abort(404)
 
     return render_template('post.html', menu=dbase.getMenu(), title=title, post=post)
 
+
+@app.route('/transfer')
+def transfer:
+    return redirect(url_for('index'), 301)
 
 @app.errorhandler(404)
 def pageNotFound(error):
