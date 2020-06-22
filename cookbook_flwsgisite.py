@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, render_template, url_for, request, flash, session, redirect, abort, g
+from flask import Flask, render_template, url_for, request, flash, session, redirect, abort, g, make_response
 from configparser import ConfigParser
 from FDataBase import FDataBase
 
@@ -96,7 +96,7 @@ def addPost():
 def showPost(alias):
     db = get_db()
     dbase = FDataBase(db)
-    title, post = dbase.F(alias)
+    title, post = dbase.getPost(alias)
     if not title:
         abort(404)
 
@@ -104,8 +104,23 @@ def showPost(alias):
 
 
 @app.route('/transfer')
-def transfer:
+def transfer():
     return redirect(url_for('index'), 301)
+
+
+@app.route('/image')
+def show_picture():
+    img = None
+    with app.open_resource(app.root_path + "/static/images/001_pancake.jpg") as f:
+        img = f.read()
+
+    if img is None:
+        return "None images"
+
+    res = make_response(img)
+    res.headers['Content-type'] = 'image/png'
+    return res
+
 
 @app.errorhandler(404)
 def pageNotFound(error):
